@@ -3,51 +3,44 @@ import java.util.Arrays;
 import tss.*;
 import tss.tpm.*;
 
-public class TSSMain 
-{
-	// Information about command line arguments
-	static int     	s_ArgsMask = 0;     // Bit mask of unmatched command line args
-	static String[] Args = null;
+public class TSSMain {
+    // Information about command line arguments
+    static int s_ArgsMask = 0;     // Bit mask of unmatched command line args
+    static String[] Args = null;
 
-	static void SetArgs(String[] args)
-	{
-	    Args = args;
-	    s_ArgsMask = (1 << Args.length) - 1;
-	}
+    static void SetArgs(String[] args) {
+        Args = args;
+        s_ArgsMask = (1 << Args.length) - 1;
+    }
 
-	static boolean IsOpt(String cmdLinelParam, String optFull, String optShort)
-	{
-	    return 0 == cmdLinelParam.compareToIgnoreCase(optFull)
-	        || (optShort != null && optShort.length() > 0 && cmdLinelParam.length() == 1
-				&& cmdLinelParam.toLowerCase().charAt(0) == optShort.toLowerCase().charAt(0));
-	}
+    static boolean IsOpt(String cmdLinelParam, String optFull, String optShort) {
+        return 0 == cmdLinelParam.compareToIgnoreCase(optFull)
+                || (optShort != null && optShort.length() > 0 && cmdLinelParam.length() == 1
+                && cmdLinelParam.toLowerCase().charAt(0) == optShort.toLowerCase().charAt(0));
+    }
 
-	static boolean IsCmdLineOptPresent(String optFull, String optShort)
-	{
-	    if (s_ArgsMask == 0 || optFull == null || optFull.length() == 0)
-	        return false;
+    static boolean IsCmdLineOptPresent(String optFull, String optShort) {
+        if (s_ArgsMask == 0 || optFull == null || optFull.length() == 0)
+            return false;
 
-	    for (int i = 0, curArgBit = 1; i < Args.length; ++i, curArgBit <<= 1)
-	    {
-	        if (    (s_ArgsMask & curArgBit) == curArgBit && Args[i] != null
-	            && (IsOpt(Args[i], optFull, optShort)
-	                || (Args[i].charAt(0) == '/' || Args[i].charAt(0) == '-')
-	                    && IsOpt(Args[i].substring(1), optFull, optShort)))
-	        {
-	            s_ArgsMask ^= curArgBit;
-	            return true;
-	        }
-	    }
-	    return false;
-	}
+        for (int i = 0, curArgBit = 1; i < Args.length; ++i, curArgBit <<= 1) {
+            if ((s_ArgsMask & curArgBit) == curArgBit && Args[i] != null
+                    && (IsOpt(Args[i], optFull, optShort)
+                    || (Args[i].charAt(0) == '/' || Args[i].charAt(0) == '-')
+                    && IsOpt(Args[i].substring(1), optFull, optShort))) {
+                s_ArgsMask ^= curArgBit;
+                return true;
+            }
+        }
+        return false;
+    }
 
-	
-	public static void main(String[] args) 
-	{
-	    SetArgs(args);
-		boolean useTbs = IsCmdLineOptPresent("tbs", "t");
+
+    public static void main(String[] args) {
+        SetArgs(args);
+        boolean useTbs = IsCmdLineOptPresent("tbs", "t");
 /*		
-		TPM_RC rc = TPM_RC.VALUE;
+        TPM_RC rc = TPM_RC.VALUE;
 		TPM_RC[] rcs = {TPM_RC.SIZE, TPM_RC.HANDLE};
 		
 		System.out.println("rc(asString) = " + rc + "; rc(short) = " + rc.name() + "; rc(asStringVerbose) = " + rc.toStringVerbose());
@@ -63,17 +56,17 @@ public class TSSMain
 	    TPM2B_ENCRYPTED_SECRET  encWrapKey = TPM2B_ENCRYPTED_SECRET.fromTpm(actBlob);
 	    TPM2B_PUBLIC    		drsIdKeyPub = TPM2B_PUBLIC.fromTpm(actBlob);
 	    TPM2B_DATA				encUriData = TPM2B_DATA.fromTpm(actBlob);
-*/	
+*/
 
-		// DocSamples s1 = new DocSamples();
-		// s1.doAll();
-	
-		System.out.println("TSSMain: starting Samples...");
-		
-		Samples s2 = new Samples(useTbs);
-		s2.doAll();
+        // DocSamples s1 = new DocSamples();
+        // s1.doAll();
 
-		System.out.println("TSSMain: finished!");
-		return;
-	}
+        System.out.println("TSSMain: starting Samples...");
+
+        Samples s2 = new Samples(useTbs);
+        s2.doAll();
+
+        System.out.println("TSSMain: finished!");
+        return;
+    }
 }
